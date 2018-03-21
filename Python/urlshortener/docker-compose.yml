@@ -1,0 +1,30 @@
+version: '2'
+services:
+  db1:
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      dev-network:
+        aliases:
+          - mongo.dev.io
+  web:
+    build: .
+    environment:
+      - ENVIRONMENT=development
+    command: python manage.py runserver 0.0.0.0:80
+    volumes:
+      - .:/code
+    ports:
+      - "80:80"
+    links:
+      - db1
+    networks:
+      dev-network:
+        aliases:
+          - urlshortner.dev.io
+
+networks:
+  dev-network:
+    driver: bridge
+

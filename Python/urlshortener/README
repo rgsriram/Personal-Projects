@@ -1,0 +1,48 @@
+Tech Stack:
+----------
+python, django and mongo db
+
+Reason for choosing mongo db is, No joins are required here and if it scales sharding will be difficult in rdbms.
+
+
+Base End Point:
+--------------
+http://0.0.0.0/
+
+
+Fetch short url:
+---------------
+Directly encoding URL to base_62 will lead into problems like reverse engineering, So randomization is introduced here with the of md5sum
+
+1. Finding the md5sum of the given url with salt.
+2. Convert into base 62 encoded string. Why base 62 is we have 26 (lower case) + 26 (upper case) + 10 (digits).
+3. Taking only 6 digits coz by this we will have 62^6 possible combinations and url needs to short.
+4. Short url which is found will be saved in db.
+
+Fetch long url:
+---------------
+If short url exists in db, it will be return otherwise request will be failed.
+
+Fetch count:
+-----------
+Count is calculated when the short url is accessed (fetch_url, fetch_urls and redirection)
+
+Clean:
+-----
+Clean deletes all the entries in db.
+
+
+Commands:
+--------
+Run: make begin
+Stop: make stop
+Restart: make restart
+See log file: make tail
+
+
+
+
+
+
+
+
