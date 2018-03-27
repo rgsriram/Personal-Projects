@@ -1,6 +1,6 @@
 # Personal Projects
 
-Idea of the project is built tiny url system. 
+Idea of the project is building tiny url. 
 
 Tech stack:
 -----------
