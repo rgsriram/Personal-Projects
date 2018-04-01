@@ -1,0 +1,17 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.projects.urlshortener.ShortenURLProperties",
+      "name": "",
+      "type": "com.projects.urlshortener.ShortenURLProperties"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.projects.urlshortener.ShortenURLProperties",
+      "name": "domain",
+      "type": "java.lang.String"
+    }
+  ]
+}

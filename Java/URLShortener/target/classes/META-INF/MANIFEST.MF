@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Built-By: sriramganesh
+Build-Jdk: 9.0.1
+Implementation-Title: gs-accessing-data-mongodb
+Implementation-Version: 0.1.0
+Implementation-Vendor-Id: org.springframework
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/gs-accessing-data-mongodb
+Created-By: Maven Integration for Eclipse
+
