@@ -1,14 +1,6 @@
 Tech Stack:
 ----------
-python, django and mongo db
-
-Reason for choosing mongo db is, No joins are required here and if it scales sharding will be difficult in rdbms.
-
-
-Base End Point:
---------------
-http://0.0.0.0/
-
+python, django, mongo db and docker
 
 Fetch short url:
 ---------------
