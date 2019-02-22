@@ -16,6 +16,7 @@ public class App {
 
 	private static Loader cmd = new Loader();
 	private static BloomFilter bloomFilter;
+	private static HashTable hashTable;
 	private static BinSort voter = new BinSort(899999);
 	private static BinSort candidCount = new BinSort(8999999);
 	private static String evmFile = "./data/votersCandList.txt";
@@ -58,7 +59,8 @@ public class App {
 		candidCount.add(candidateID, vote+1);
 	}
 
-	public static void implementWithBloomFilter(String evmFile) {
+
+	public static void implementDirectAddressingWithBloomFilter(String evmFile) {
 		try {
 			String fileLocation = evmFile;
 			fr = new FileReader(fileLocation);
@@ -82,28 +84,28 @@ public class App {
 		}
 	}
 
-//	public static void checkWithHashTable(String evmFile) {
-//		try {
-//
-//			String fileLocation = evmFile;
-//			fr = new FileReader(fileLocation);
-//			cr = new CSVReaderBuilder(fr).withSkipLines(1).build();
-//			String[] nextRecord;
-//			while ((nextRecord = cr.readNext()) != null) {
-//				boolean isPresent = bloomFilter.isPresent(nextRecord[0]);
-//				if (isPresent) {
-//					voter.add(200000, 21);
-//					long isUserPresent = voter.find(200000);
-//					if (isUserPresent != 0) {
-//						candidCount.count(21, 200000);
-//					}
-//				}
-//			}
-//
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
+	public static void implementWithHashTable(String evmFile) {
+		try {
+
+			String fileLocation = evmFile;
+			fr = new FileReader(fileLocation);
+			cr = new CSVReaderBuilder(fr).withSkipLines(1).build();
+			String[] nextRecord;
+			while ((nextRecord = cr.readNext()) != null) {
+				boolean isPresent = hashTable.isPresent(Integer.parseInt(nextRecord[0]));
+				if (isPresent) {
+					voter.add(200000, 21);
+					long isUserPresent = voter.find(200000);
+					if (isUserPresent != 0) {
+						candidCount.count(21, 200000);
+					}
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static void getCandidCount(int candidID) {
 		System.out.println("Finding the candidID");

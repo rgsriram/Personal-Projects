@@ -3,7 +3,7 @@ package com.upgrad.utils;
 public class BinSort {
 
 	public long[] data;
-//	int candidVoteCount = 1;
+
 
 	public BinSort(int size) {
 		data = new long[size];
