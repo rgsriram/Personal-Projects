@@ -1,4 +1,4 @@
-package com.upgrad.saavn.trendingSongs;
+package com.upgrad.saavn;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
