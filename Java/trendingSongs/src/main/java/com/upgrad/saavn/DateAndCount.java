@@ -6,7 +6,9 @@ import java.io.IOException;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableUtils;
 
-
+/*
+ * Class will have date and count. It is used in the mapper to keep and day and count for the given song.
+ */
 public class DateAndCount implements Writable {
 	String date;
 	int count;

@@ -11,13 +11,18 @@ public class TrendingSongsMapper extends Mapper<Object, Text, Text, DateAndCount
 	public static List<String> days = Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11",
 			"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
 			"30", "31");
-
+	
+	/*
+	 * Stores the song and its count. Count is stored uniquely based on the song id.
+	 * 
+	 */
 	public void map(Object key, Text record, Context con) throws IOException, InterruptedException {
 
 		String[] info = record.toString().split(",");
 		String songid = info[0];
 		String[] date = info[4].split("-");
 		String day;
+		
 		if (date.length > 1) {
 			day = date[2];
 
