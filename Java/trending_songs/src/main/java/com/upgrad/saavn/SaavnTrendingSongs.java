@@ -29,7 +29,7 @@ public class SaavnTrendingSongs {
 		job.setReducerClass(TrendingSongsReducer.class);
 
 		job.setMapOutputKeyClass(Text.class);
-		job.setMapOutputValueClass(DateAndCount.class);
+		job.setMapOutputValueClass(DayCount.class);
 
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);

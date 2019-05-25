@@ -1,5 +1,5 @@
 com/upgrad/saavn/TrendingSongsPartitioner.class
 com/upgrad/saavn/TrendingSongsMapper.class
-com/upgrad/saavn/DateAndCount.class
+com/upgrad/saavn/DayCount.class
 com/upgrad/saavn/TrendingSongsReducer.class
 com/upgrad/saavn/SaavnTrendingSongs.class

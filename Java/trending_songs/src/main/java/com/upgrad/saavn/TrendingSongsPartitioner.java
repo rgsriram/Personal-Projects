@@ -7,7 +7,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Partitioner;
 
-public class TrendingSongsPartitioner extends Partitioner<Text, DateAndCount> implements Configurable {
+public class TrendingSongsPartitioner extends Partitioner<Text, DayCount> implements Configurable {
 	private Configuration configuration;
 	HashMap<String, Integer> daymap = new HashMap<String, Integer>();
 
@@ -55,7 +55,7 @@ public class TrendingSongsPartitioner extends Partitioner<Text, DateAndCount> im
 		return configuration;
 	}
 
-	public int getPartition(Text key, DateAndCount value, int numReduceTasks) {
+	public int getPartition(Text key, DayCount value, int numReduceTasks) {
 		return (int) (daymap.get(value.getDate()));
 	}
 

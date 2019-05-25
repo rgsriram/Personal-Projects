@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class TrendingSongsMapper extends Mapper<Object, Text, Text, DateAndCount> {
+public class TrendingSongsMapper extends Mapper<Object, Text, Text, DayCount> {
 	public static List<String> days = Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11",
 			"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
 			"30", "31");
@@ -27,7 +27,7 @@ public class TrendingSongsMapper extends Mapper<Object, Text, Text, DateAndCount
 			day = date[2];
 
 			if (days.contains(day)) {
-				con.write(new Text(songid), new DateAndCount(day, 1));
+				con.write(new Text(songid), new DayCount(day, 1));
 			}
 		}
 	}

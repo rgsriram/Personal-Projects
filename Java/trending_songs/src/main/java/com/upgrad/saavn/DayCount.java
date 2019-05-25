@@ -9,13 +9,13 @@ import org.apache.hadoop.io.WritableUtils;
 /*
  * Class will have date and count. It is used in the mapper to keep and day and count for the given song.
  */
-public class DateAndCount implements Writable {
+public class DayCount implements Writable {
 	String date;
 	int count;
 
-	public DateAndCount() {super();}
+	public DayCount() {super();}
 
-	public DateAndCount(String date, int count) {
+	public DayCount(String date, int count) {
 	    this.date = date;
 	    this.count = count;
 	}
