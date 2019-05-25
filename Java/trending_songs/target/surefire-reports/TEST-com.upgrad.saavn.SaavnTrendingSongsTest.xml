@@ -5,7 +5,7 @@
     <property name="java.vm.version" value="10.0.2+13"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-10.0.2.jdk/Contents/Home/lib"/>
     <property name="gopherProxySet" value="false"/>
-    <property name="maven.multiModuleProjectDirectory" value="/Users/sriramganesh/Study/Personal-Projects/Java/trendingSongs"/>
+    <property name="maven.multiModuleProjectDirectory" value="/Users/sriramganesh/Study/Personal-Projects/Java/trending_songs"/>
     <property name="java.vm.vendor" value="&quot;Oracle Corporation&quot;"/>
     <property name="java.vendor.url" value="http://java.oracle.com/"/>
     <property name="guice.disable.misplaced.annotation.check" value="true"/>
@@ -16,7 +16,7 @@
     <property name="user.country" value="IN"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="user.dir" value="/Users/sriramganesh/Study/Personal-Projects/Java/trendingSongs"/>
+    <property name="user.dir" value="/Users/sriramganesh/Study/Personal-Projects/Java/trending_songs"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
     <property name="java.runtime.version" value="10.0.2+13"/>
     <property name="java.awt.graphicsenv" value="sun.awt.CGraphicsEnvironment"/>
@@ -26,7 +26,7 @@
 "/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="os.name" value="Mac OS X"/>
-    <property name="classworlds.conf" value="/Users/sriramganesh/Study/Hadoop/mapreduce/saavn/.metadata/.plugins/org.eclipse.m2e.launching/launches/m2conf2507450761497094318.tmp"/>
+    <property name="classworlds.conf" value="/Users/sriramganesh/Study/Hadoop/mapreduce/saavn/.metadata/.plugins/org.eclipse.m2e.launching/launches/m2conf3589429672454136250.tmp"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
     <property name="java.library.path" value="/Users/sriramganesh/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
     <property name="jdk.debug" value="release"/>
@@ -52,7 +52,7 @@
     <property name="java.vm.info" value="mixed mode"/>
     <property name="java.version" value="10.0.2"/>
     <property name="java.vendor" value="Oracle Corporation"/>
-    <property name="maven.home" value="/Users/sriramganesh/Study/Personal-Projects/Java/trendingSongs/EMBEDDED"/>
+    <property name="maven.home" value="/Users/sriramganesh/Study/Personal-Projects/Java/trending_songs/EMBEDDED"/>
     <property name="file.separator" value="/"/>
     <property name="java.version.date" value="2018-07-17"/>
     <property name="java.vendor.url.bug" value="http://bugreport.java.com/bugreport/"/>
