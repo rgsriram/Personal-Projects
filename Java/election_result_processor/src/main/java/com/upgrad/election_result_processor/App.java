@@ -1,117 +1,175 @@
 package com.upgrad.election_result_processor;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
-import com.upgrad.cmd.Loader;
-import com.upgrad.utils.BinSort;
+import org.apache.log4j.Logger;
+
+import com.upgrad.election_result_processor.cmd.Loader;
+import com.upgrad.election_result_processor.service.DirectAddressingDriverServiceImpl;
+import com.upgrad.election_result_processor.service.HashTableDriverServiceImpl;
+import com.upgrad.election_result_processor.service.IElectionActivityService;
 import com.upgrad.utils.BloomFilter;
-import com.upgrad.utils.HashTable;
+import com.upgrad.utils.Constants;
+import com.upgrad.utils.LoadProperties;
 
 public class App {
-
-	private static Loader cmd = new Loader();
+	private static LoadProperties loadProps = new LoadProperties(Constants.PROP_FILE);
+	private static Loader command = new Loader();
+	private static String evmFile = Constants.EVM_FILE;
+	private static String voterFile = Constants.VOTER_ID_FILE;
 	private static BloomFilter bloomFilter;
-	private static HashTable hashTable;
-	private static BinSort voter = new BinSort(899999);
-	private static BinSort candidCount = new BinSort(8999999);
-	private static String evmFile = "./data/votersCandList.txt";
-	private static String voterFile = "./data/validVotersList.txt";
-	static BufferedReader br = null;
-	static FileReader fr = null;
-	static CSVReader cr = null;
+
+	private static IElectionActivityService directAddressingService = new DirectAddressingDriverServiceImpl();
+	private static IElectionActivityService hashTableService = new HashTableDriverServiceImpl();
+	private static Scanner scn;
+	private static Logger logger = Logger.getLogger(App.class);
+	static int missingFrom;
+	static int missingTo;
 
 	public static void main(String[] args) throws IOException {
 
-		Scanner scn = new Scanner(System.in);
 		int caseScan = 0;
-		while (caseScan <= 5) {
+		int noOfInputs = Integer.parseInt((String) LoadProperties.getProperties("noOfInput"));
+		long startTime;
+		long endTime;
+		float totalTime;
+
+		bloomFilter = command.loadDataToBloomFilter(voterFile);
+		logger.info("Data loaded to Bloom Filter");
+		directAddressingService.withBloomFilter(evmFile, bloomFilter);
+		directAddressingService.withOutBloomFilter(evmFile);
+		hashTableService.withBloomFilter(evmFile, bloomFilter);
+		hashTableService.withOutBloomFilter(evmFile);
+		scn = new Scanner(System.in);
+
+		System.out.println("\nEnter any of the following options:\n"
+				+ "1. Find the candidate for an given voter id using Direct addressing with bloom filter\n"
+				+ "2. Get the vote count for cadidate using Direct Addressing\n"
+				+ "3. Find the candidate for an given voter id using Hash table with bloom filter\n"
+				+ "4. Get the vote count for cadidate using Hash Table\n" + "5. Exit\n");
+
+		while (caseScan <= noOfInputs) {
+
 			caseScan = scn.nextInt();
+
+			// If selected option is not available in switch case it will exit the program
 			switch (caseScan) {
-			case 1:
-				loadBloom(voterFile);
+			/***
+			 * To execute FIND_CANDIATE_FOR_VOTER_IN_DIRECT_ADDRESSING_WITH_BLOOM_FILTER
+			 * please enter #1
+			 * 
+			 */
+			case Constants.FIND_CANDIATE_FOR_VOTER_IN_DIRECT_ADDRESSING_WITH_BLOOM_FILTER:
+				System.out.println("\nPlease enter the voter id: ");
+				int voterID = scn.nextInt();
+				startTime = System.currentTimeMillis();
+				directAddressingService.getCandidateWithBloomFilter(voterID);
+				endTime = System.currentTimeMillis();
+				totalTime = (endTime - startTime) / 1000F;
+				System.out.println("Total time taken to run (in secs): " + totalTime);
 				break;
-			case 2:
-				implementWithBloomFilter(evmFile);
-				break;
-			case 3:
-//				checkWithHashTable(evmFile);
-				break;
-			case 4:
+			/***
+			 * To execute GET_CANDIDATE_COUNT_USING_DIRECT_ADDRESSING : please enter #2
+			 * 
+			 */
+			case Constants.GET_CANDIDATE_COUNT_USING_DIRECT_ADDRESSING:
+				System.out.println("\nPlease enter candidate id: ");
 				int candidID = scn.nextInt();
-				getCandidCount(candidID);
+				startTime = System.currentTimeMillis();
+				directAddressingService.getCandidCount(candidID, Constants.WITH_BF);
+				endTime = System.currentTimeMillis();
+				totalTime = (endTime - startTime) / 1000F;
+				System.out.println("Total time taken to run (in secs): " + totalTime);
+				break;
+			/***
+			 * To execute FIND_CANDIATE_FOR_VOTER_IN_HASH_TABLE_WITH_BLOOM_FILTER : please
+			 * enter #3
+			 * 
+			 */
+			case Constants.FIND_CANDIATE_FOR_VOTER_IN_HASH_TABLE_WITH_BLOOM_FILTER:
+				System.out.println("\nPlease enter the voter id: ");
+				int voterIDHashTable = scn.nextInt();
+				startTime = System.currentTimeMillis();
+				hashTableService.getCandidateWithBloomFilter(voterIDHashTable);
+				endTime = System.currentTimeMillis();
+				totalTime = (endTime - startTime) / 1000F;
+				System.out.println("Total time taken to run (in secs): " + totalTime);
+				break;
+			/***
+			 * To execute GET_CANDIDATE_COUNT_USING_HASH_TABLE : please enter #4
+			 * 
+			 */
+			case Constants.GET_CANDIDATE_COUNT_USING_HASH_TABLE:
+				System.out.println("\nPlease enter candidate id: ");
+				int candidateID = scn.nextInt();
+				startTime = System.currentTimeMillis();
+				hashTableService.getCandidCount(candidateID, Constants.WITH_BF);
+				endTime = System.currentTimeMillis();
+				totalTime = (endTime - startTime) / 1000F;
+				System.out.println("Total time taken to run (in secs): " + totalTime);
+				break;
+			/***
+			 * To execute FIND_CANDIATE_FOR_VOTER_IN_HASH_TABLE_WITH_OUT_BLOOM_FILTER:
+			 * Please enter #5
+			 */
+			case Constants.EXIT:
+				System.out.println("Exited");
+				System.exit(0);
+				break;
+			/***
+			 * To execute
+			 * FIND_CANDIATE_FOR_VOTER_IN_DIRECT_ADDRESSING_WITH_OUT_BLOOM_FILTER: Please
+			 * enter #6
+			 */
+			case Constants.FIND_CANDIATE_FOR_VOTER_IN_DIRECT_ADDRESSING_WITH_OUT_BLOOM_FILTER:
+				System.out.println("\nPlease enter the voter id: ");
+				int voterId = scn.nextInt();
+				startTime = System.currentTimeMillis();
+				directAddressingService.getCandidateWithOutBloomFilter(voterId);
+				endTime = System.currentTimeMillis();
+				totalTime = (endTime - startTime) / 1000F;
+				System.out.println("Total time taken to run (in secs): " + totalTime);
+				break;
+			/***
+			 * To execute FIND_CANDIATE_FOR_VOTER_IN_HASH_TABLE_WITH_OUT_BLOOM_FILTER:
+			 * Please enter #7
+			 */
+			case Constants.FIND_CANDIATE_FOR_VOTER_IN_HASH_TABLE_WITH_OUT_BLOOM_FILTER:
+				System.out.println("\nPlease enter the voter id: ");
+				int voterIdHashTable = scn.nextInt();
+				startTime = System.currentTimeMillis();
+				hashTableService.getCandidateWithOutBloomFilter(voterIdHashTable);
+				endTime = System.currentTimeMillis();
+				totalTime = (endTime - startTime) / 1000F;
+				System.out.println("Total time taken to run (in secs): " + totalTime);
+				break;
+			/***
+			 * To execute FIND_CANDIATE_FOR_VOTER_IN_HASH_TABLE_WITH_OUT_BLOOM_FILTER:
+			 * Please enter #8
+			 */
+			case Constants.CHECK_FALSE_POSITIVE_IN_DIRECT_ADDRESSING:
+				missingFrom = Integer.parseInt((String) LoadProperties.getProperties("startIndex"));
+				missingTo = Integer.parseInt((String) LoadProperties.getProperties("endIndex"));
+				System.out.println("Total number of false postives (Bloom filter + Direct addressing): "
+						+ directAddressingService.validateFalsePositive(missingFrom, missingTo));
+				break;
+			/***
+			 * To execute FIND_CANDIATE_FOR_VOTER_IN_HASH_TABLE_WITH_OUT_BLOOM_FILTER:
+			 * Please enter #9
+			 */
+			case Constants.CHECK_FALSE_POSITIVE_IN_HASH_TABLE:
+				missingFrom = Integer.parseInt((String) LoadProperties.getProperties("startIndex"));
+				missingTo = Integer.parseInt((String) LoadProperties.getProperties("endIndex"));
+				System.out.println("Total number of false postives (Bloom filter + Hash Table): "
+						+ hashTableService.validateFalsePositive(missingFrom, missingTo));
+				break;
+
+			default:
+				System.out.println("Exited");
+				System.exit(0);
 				break;
 			}
-
 		}
 	}
-
-	public static void loadBloom(String voterFile) throws IOException {
-		bloomFilter = cmd.loadDataToBloomFilter(voterFile);
-	}
-	
-	private static void incrementCandidateVote(int candidateID, int value) {
-		long vote = candidCount.data[candidateID];
-		candidCount.add(candidateID, vote+1);
-	}
-
-
-	public static void implementDirectAddressingWithBloomFilter(String evmFile) {
-		try {
-			String fileLocation = evmFile;
-			fr = new FileReader(fileLocation);
-			cr = new CSVReaderBuilder(fr).withSkipLines(1).build();
-			String[] nextRecord;
-			while ((nextRecord = cr.readNext()) != null) {
-				String[] voterCandidateID = nextRecord[0].split(" ");
-				System.out.println(voterCandidateID[0] + " " + voterCandidateID[1]);
-				boolean isPresent = bloomFilter.isPresent(Integer.parseInt(voterCandidateID[0]));
-				if (isPresent) {
-					voter.add(Integer.parseInt(voterCandidateID[0]), Integer.parseInt(voterCandidateID[1]));
-//					candidCount.count(Integer.parseInt(voterCandidateID[1]), Integer.parseInt(voterCandidateID[0]));
-					incrementCandidateVote(Integer.parseInt(voterCandidateID[1]), Integer.parseInt(voterCandidateID[0]));
-					
-				}else {
-					System.out.println("Not Present");
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void implementWithHashTable(String evmFile) {
-		try {
-
-			String fileLocation = evmFile;
-			fr = new FileReader(fileLocation);
-			cr = new CSVReaderBuilder(fr).withSkipLines(1).build();
-			String[] nextRecord;
-			while ((nextRecord = cr.readNext()) != null) {
-				boolean isPresent = hashTable.isPresent(Integer.parseInt(nextRecord[0]));
-				if (isPresent) {
-					voter.add(200000, 21);
-					long isUserPresent = voter.find(200000);
-					if (isUserPresent != 0) {
-						candidCount.count(21, 200000);
-					}
-				}
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void getCandidCount(int candidID) {
-		System.out.println("Finding the candidID");
-		long find = candidCount.find(candidID);
-		System.out.println(find);
-		
-	}
-
 }

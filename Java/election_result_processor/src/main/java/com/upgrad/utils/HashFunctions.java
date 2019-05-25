@@ -1,18 +1,17 @@
 package com.upgrad.utils;
 
 public class HashFunctions {
-	
-	//typical hash function
+
 	public int genHash(int x) {
-		return x * 31;
+		return x * 6851;
 	}
-	
+
 	public int genHash2(int x) {
-		return x * 61;
+		return x * 671;
 	}
-	
+
 	public int genHash3(int x) {
-		return x * 89;
+		return x * 1053;
 	}
-	
+
 }

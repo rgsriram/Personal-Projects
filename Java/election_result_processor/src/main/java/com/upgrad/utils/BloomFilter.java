@@ -6,7 +6,7 @@ public class BloomFilter {
 	BitSet bs;// BloomFilter array of bits
 
 	HashFunctions hashFunction;
-	int collisionCount = 0;
+	public int collisionCount = 0;
 	int hash1, hash2, hash3; // hash function values
 	int size; // size of the bloom filter
 	int numHashFunctions; // total number of hash functions to work with bloom filter
@@ -28,6 +28,7 @@ public class BloomFilter {
 		 * This function returns true is x is present and false if x is not present-
 		 * according to bloom filter.
 		 */
+
 		hash1 = hashFunction.genHash(x);
 		hash2 = hashFunction.genHash2(x);
 		hash3 = hashFunction.genHash3(x);
@@ -38,7 +39,6 @@ public class BloomFilter {
 				return false;
 			}
 		}
-
 		return true;
 	}
 
