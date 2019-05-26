@@ -15,11 +15,13 @@ public class TrendingSongsReducer extends Reducer<Text, DayCount, Text, Text> {
 		
 		int song_count = 0;
 		
+		// Sum count for each song based.
 		for (DayCount var : valueList) {
 			song_count += var.getCount();
 		}
 		
-		String out = "::" + song_count;
+		// Output will be written as "songid :: count"
+		String out = ":: " + song_count;
 		con.write(key, new Text(out));
 	}
 }

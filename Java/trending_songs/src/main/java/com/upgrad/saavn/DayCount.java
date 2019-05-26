@@ -10,28 +10,32 @@ import org.apache.hadoop.io.WritableUtils;
  * Class will have date and count. It is used in the mapper to keep and day and count for the given song.
  */
 public class DayCount implements Writable {
-	String date;
+	
+	// Setting day and count variables.
+	String day;
 	int count;
 
 	public DayCount() {super();}
-
-	public DayCount(String date, int count) {
-	    this.date = date;
+	
+	// Parameterized constructor to initialize the day and count.
+	public DayCount(String day, int count) {
+	    this.day = day;
 	    this.count = count;
 	}
 
-	public String getDate() {return date;}
-	public void setDate(String number) {this.date = number;}
+	// Setters and Getters class.
+	public String getDate() {return day;}
+	public void setDate(String number) {this.day = number;}
 	public int getCount() {return count;}
 	public void setCount(int count) {this.count = count;}
 
 	public void readFields(DataInput dataInput) throws IOException {
-	    date = WritableUtils.readString(dataInput);
+	    day = WritableUtils.readString(dataInput);
 	    count = WritableUtils.readVInt(dataInput);      
 	}
 
 	public void write(DataOutput dataOutput) throws IOException {
-	    WritableUtils.writeString(dataOutput, date);
+	    WritableUtils.writeString(dataOutput, day);
 	    WritableUtils.writeVInt(dataOutput, count);
 
 	}

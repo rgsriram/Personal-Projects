@@ -55,6 +55,7 @@ public class TrendingSongsPartitioner extends Partitioner<Text, DayCount> implem
 		return configuration;
 	}
 
+	// Getting the partition based on the day.
 	public int getPartition(Text key, DayCount value, int numReduceTasks) {
 		return (int) (daymap.get(value.getDate()));
 	}

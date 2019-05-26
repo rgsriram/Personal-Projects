@@ -22,23 +22,23 @@ public class SaavnTrendingSongs {
 		job = Job.getInstance(conf, "saavn");
 		job.setJarByClass(SaavnTrendingSongs.class);
 		
-		/*
-		 * Setting Mapper, Partitioner, and Reducer and other configurations.
-		 */
+		// Setting Mapper, and Reducer class.
 		job.setMapperClass(TrendingSongsMapper.class);
 		job.setReducerClass(TrendingSongsReducer.class);
-
+		
+		// Setting Mapper output key, and value type
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(DayCount.class);
-
+		
+		// Setting Reducer output key, and value type
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
-
+		
+		// Getting input and output path from the command line.
 		FileInputFormat.addInputPath(job, new Path(args[0]));
-
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		
-		// Setting number of reducer.
+		// Setting number of reducer.Since there are 31 partitioner, we have one to one mapping between partitioner and reducer. Load will be balanced properly,
 		job.setNumReduceTasks(31);
 
 		// Specify the partitioner class.

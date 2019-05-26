@@ -13,19 +13,25 @@ public class TrendingSongsMapper extends Mapper<Object, Text, Text, DayCount> {
 			"30", "31");
 	
 	/*
-	 * Stores the song and its count. Count is stored uniquely based on the song id.
-	 * 
+	 * Stores the song and its count. Count is stored uniquely based on the song id per day.
 	 */
 	public void map(Object key, Text record, Context con) throws IOException, InterruptedException {
-
+		
+		// Getting text record contains song ID, user ID, timestamp, hour, date.
 		String[] info = record.toString().split(",");
+		
 		String songid = info[0];
+		
+		// Getting the day from the particular date.
 		String[] date = info[4].split("-");
+		
 		String day;
 		
+		// If the date is not valid it will not get processed.
 		if (date.length > 1) {
 			day = date[2];
-
+			
+			// If the day is not valid it will not get processed.
 			if (days.contains(day)) {
 				con.write(new Text(songid), new DayCount(day, 1));
 			}

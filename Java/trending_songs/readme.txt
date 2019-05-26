@@ -6,9 +6,11 @@ Implementation Logic
 
 Mapper:
 -------
-1. Mapper takes the line contains song ID, user ID, timestamp, hour, date.
-2. It stores the count per song and the date using the custom writable class called DayCount. DayCount class keeps the count per day for each song. 
-3. Finally mapper returns the song id and DayCount writable (Count per day) .
+
+1. Mapper takes the text file input format as input
+2. Mapper takes the line contains song ID, user ID, timestamp, hour, date.
+3. It stores the count per song and the date using the custom writable class called DayCount. DayCount class keeps the count per day for each song. 
+4. Finally mapper returns the song id and DayCount writable (Count per day) .
 
 Partitioner:
 ------------
