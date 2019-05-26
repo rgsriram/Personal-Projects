@@ -28,7 +28,7 @@ public class TrendingSongsDriver {
 		
 		// Setting Mapper output key, and value type
 		job.setMapOutputKeyClass(Text.class);
-		job.setMapOutputValueClass(DayCount.class);
+		job.setMapOutputValueClass(DayCountWritable.class);
 		
 		// Setting Reducer output key, and value type
 		job.setOutputKeyClass(Text.class);
