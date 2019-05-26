@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
@@ -15,7 +16,7 @@ public class TrendingSongsMapper extends Mapper<Object, Text, Text, DayCount> {
 	/*
 	 * Stores the song and its count. Count is stored uniquely based on the song id per day.
 	 */
-	public void map(Object key, Text record, Context con) throws IOException, InterruptedException {
+	public void map(LongWritable key, Text record, Context con) throws IOException, InterruptedException {
 		
 		// Getting text record contains song ID, user ID, timestamp, hour, date.
 		String[] info = record.toString().split(",");
