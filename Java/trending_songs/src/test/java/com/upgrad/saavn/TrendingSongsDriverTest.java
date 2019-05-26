@@ -7,7 +7,7 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class SaavnTrendingSongsTest 
+public class TrendingSongsDriverTest 
     extends TestCase
 {
     /**
@@ -15,7 +15,7 @@ public class SaavnTrendingSongsTest
      *
      * @param testName name of the test case
      */
-    public SaavnTrendingSongsTest( String testName )
+    public TrendingSongsDriverTest( String testName )
     {
         super( testName );
     }
@@ -25,7 +25,7 @@ public class SaavnTrendingSongsTest
      */
     public static Test suite()
     {
-        return new TestSuite( SaavnTrendingSongsTest.class );
+        return new TestSuite( TrendingSongsDriverTest.class );
     }
 
     /**

@@ -10,7 +10,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 /*
  * Driver class which sets configurations. Invoke Mapper, Partitioner, and Reducer.
  */
-public class SaavnTrendingSongs {
+public class TrendingSongsDriver {
 
 	public static void main(String[] args) throws Exception {
 
@@ -20,7 +20,7 @@ public class SaavnTrendingSongs {
 		conf = new Configuration();
 
 		job = Job.getInstance(conf, "saavn");
-		job.setJarByClass(SaavnTrendingSongs.class);
+		job.setJarByClass(TrendingSongsDriver.class);
 		
 		// Setting Mapper, and Reducer class.
 		job.setMapperClass(TrendingSongsMapper.class);
