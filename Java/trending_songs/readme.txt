@@ -26,4 +26,8 @@ Reducer:
 2. Because of the partitioner each reducer receives the data for one day. It sums up the count for each song and it will be returned.
 
 
-Here since we are calculating per day wise count for each song sudden spikes can be ignored when we are combining for a month.
+Calculate top trending songs from reducer output:
+-------------------------------------------------
+Each reducer output will create separate file in s3. All the last 7 days file (25-31) will be taken out of s3 bucket and sort based on the count will give top 100 songs.
+Script is also attached in the project "calculate_top_100_songs.sh"
+
