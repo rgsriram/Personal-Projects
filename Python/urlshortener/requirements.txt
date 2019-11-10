@@ -32,7 +32,7 @@ Pygments==2.2.0
 pymongo==3.4.0
 python-dateutil==2.6.0
 pytz==2017.2
-PyYAML==3.12
+PyYAML==5.1
 requests==2.11.1
 scandir==1.5
 simplegeneric==0.8.1
