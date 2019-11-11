@@ -3,7 +3,7 @@ package solution;
 import java.io.Serializable;
 
 /*
-Class holds all the values used for the calculation.
+Used for calculating the maximum.
  */
 public class MaximumTuple implements Serializable {
     private int count;

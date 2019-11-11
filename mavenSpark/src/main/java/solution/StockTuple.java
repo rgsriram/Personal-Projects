@@ -2,6 +2,9 @@ package solution;
 
 import java.io.Serializable;
 
+/*
+Used for calculating the max volume.
+ */
 public class StockTuple implements Serializable {
     private int count;
     private double volume;

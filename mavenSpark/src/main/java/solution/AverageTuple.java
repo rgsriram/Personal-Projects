@@ -3,7 +3,7 @@ package solution;
 import java.io.Serializable;
 
 /*
-Helper class holds the count and average.
+Used for calculating the moving average.
  */
 public class AverageTuple implements Serializable {
     private int count;
