@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.Math;
 
 import org.json.simple.JSONArray;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -25,8 +26,6 @@ import scala.Tuple2;
 
 
 public class Driver {
-	
-	transient static Gson gson;
 
 	// Harding kafka broker port.
 	static String KAFKA_BROKER_PORT = "9092";
@@ -37,17 +36,10 @@ public class Driver {
 	// Spark App Name
 	static String SPARK_APP_NAME = "stockAnalysis";
 
-	/*
-	 * Convert string into json.
-	 */
-	private static Gson getGson() {
-	    if (gson == null) {
-	        gson = new Gson();
-	    }
-	    return gson;
-	}
-
+	// Calculate the simple moving average closing price of the four stocks in a 5-minute sliding window for the last 10 minutes
 	public static void simpleMovingAvg(JavaInputDStream<ConsumerRecord<String, String>> dstream) {
+
+		// Creating the pairDStream contains the symbol and AvergaeTuple. Tuple containd count, and close price.
 		JavaPairDStream<String, AverageTuple> pair = dstream.flatMapToPair(
 				new PairFlatMapFunction<String, String, AverageTuple>() {
 
@@ -67,6 +59,8 @@ public class Driver {
 						return list.iterator();
 					}
 				});
+
+		// Iterate and calculate the average for each record.
 		JavaPairDStream<String, AverageTuple> result=pair.reduceByKeyAndWindow(
 				new Function2<AverageTuple, AverageTuple, AverageTuple>() {
 					public AverageTuple call(AverageTuple result, AverageTuple value)
@@ -78,6 +72,7 @@ public class Driver {
 					}
 				}, new Duration(600000), new Duration(300000));
 
+		// Display final result.
 		result.foreachRDD(new VoidFunction<JavaPairRDD<String,AverageTuple>>() {
 			public void call(JavaPairRDD<String, AverageTuple> t)
 					throws Exception {
@@ -87,8 +82,10 @@ public class Driver {
 
 	}
 
-	// Calculate the simple moving average closing price of the four stocks in a 5-minute sliding window for the last 10 minutes
+	// Find the stock out of the four stocks giving maximum profit (average closing price - average opening price) in a 5-minute sliding window for the last 10 minutes.
 	public static void maxProfit(JavaInputDStream<ConsumerRecord<String, String>> dstream) {
+
+		// Creating the pairDStream contains the symbol and AvergaeTuple. Tuple containd count, open, and close price.
 		JavaPairDStream<String, MaximumTuple> pair = dstream.flatMapToPair(
 				new PairFlatMapFunction<String, String, MaximumTuple>() {
 					public Iterator<Tuple2<String, MaximumTuple>> call(String t)
@@ -113,6 +110,7 @@ public class Driver {
 					}
 				});
 
+		// Iterate and calculate the average for each record.
 		JavaPairDStream<String, MaximumTuple> result=pair.reduceByKeyAndWindow(
 				new Function2<MaximumTuple, MaximumTuple, MaximumTuple>() {
 					public MaximumTuple call(MaximumTuple result, MaximumTuple value)
@@ -125,6 +123,7 @@ public class Driver {
 					}
 				}, new Duration(600000), new Duration(300000));
 
+		// Display final result.
 		result.foreachRDD(new VoidFunction<JavaPairRDD<String,MaximumTuple>>() {
 			public void call(JavaPairRDD<String, MaximumTuple> t)
 					throws Exception {
@@ -133,7 +132,10 @@ public class Driver {
 		});
 	}
 
+	// Calculate the trading volume(total traded volume) of the four stocks every 10 minutes and decide which stock to purchase out of the four stocks.
 	public static void buyMaxStock(JavaInputDStream<ConsumerRecord<String, String>> dstream) {
+
+		// Creating the pairDStream contains the symbol and AvergaeTuple. Tuple containd count, and volume price.
 		JavaPairDStream<String, StockTuple> pair = dstream.flatMapToPair(
 				new PairFlatMapFunction<String, String, StockTuple>() {
 
@@ -154,31 +156,40 @@ public class Driver {
 					}
 				});
 
+		// Iterate and calculate the average for each record.
 		JavaPairDStream<String, StockTuple> result=pair.reduceByKeyAndWindow(
 				new Function2<StockTuple, StockTuple, StockTuple>() {
 					public StockTuple call(StockTuple result, StockTuple value)
 							throws Exception {
-						if (result.getVolume() < value.getVolume())
-							result.setVolume(value.getVolume());
+
+						// Need to take abs value of volume.
+						double resultVolume = Math.abs(result.getVolume());
+						double valueVolume = Math.abs(value.getVolume());
+
+						if (resultVolume < valueVolume)
+							result.setVolume(valueVolume);
 
 						result.setCount(result.getCount() + value.getCount());
 						return result;
 					}
 				}, new Duration(600000), new Duration(300000));
 
+		// Display final result.
 		result.foreachRDD(new VoidFunction<JavaPairRDD<String,StockTuple>>() {
 			public void call(JavaPairRDD<String, StockTuple> t)
 					throws Exception {
-
 				t.coalesce(1).print();
-
 			}
 		});
 
 	}
 
+	/*
+	   Main Driver class from where program starts.
+	 */
 	public static void main(String[] args) throws InterruptedException {
 
+		// Needs kafka broker id, topic, and group id. If these variables not there program will exit.
 		if (args.length <= 2) {
 			System.out.println("Not enough args passed");
 			System.exit(0);
@@ -188,16 +199,17 @@ public class Driver {
 		String KAFKA_TOPIC_NAME = args[1];
 		String KAFKA_GROUP_ID = args[2];
 
+		// Based on the environment spark master will be set.
 		if (ENV_DEV)
 			SparkConf conf = new SparkConf().setAppName(SPARK_APP_NAME).setMaster("local[*]");
 		else
 			SparkConf conf = new SparkConf().setAppName(SPARK_APP_NAME);
 
-		
+		// Setting spark context and streaming context with 1 minute duration.
 		JavaSparkContext sc = new JavaSparkContext(conf);
         JavaStreamingContext jssc = new JavaStreamingContext(sc, new Duration(1));
 
-        // Setting up kafka parameters
+        // Setting up kafka parameters. Looking for the 'latest' messages.
         Map<String, Object> kafkaParams = new HashMap<>();
         kafkaParams.put("bootstrap.servers", KAFKA_BROKER + ":" + KAFKA_BROKER_PORT);
         kafkaParams.put("key.deserializer", StringDeserializer.class);
@@ -207,40 +219,14 @@ public class Driver {
         kafkaParams.put("enable.auto.commit", false);
 
         Collection<String> topics = Arrays.asList(KAFKA_TOPIC_NAME);
-        
+
+        // Creation of DStream with necessary params.
         final JavaInputDStream<ConsumerRecord<String, String>> dstream =
         		  KafkaUtils.createDirectStream(
         		    jssc,
         		    LocationStrategies.PreferConsistent(),
         		    ConsumerStrategies.<String, String>Subscribe(topics, kafkaParams)
         		  );
-		
-//		JavaPairDStream<Object, Object> outStream =
-//			    stream.mapToPair(record -> new Tuple2<>(record.key(), record.value()));
-//
-//		// Convert into string into stockinformation object
-//		JavaDStream<StockInformation> stockInformation = outStream.
-//				map(tuple2 -> getGson().fromJson((String) tuple2._2(), StockInformation.class
-//		));
-//
-//		// Calculate the simple moving average closing price of the four stocks in a 5-minute sliding window for the last 10 minutes
-//		JavaDStream<StockInformation> rdd = stockInformation.window(new Duration(600000), new Duration(300000));
-//		double rddCount = (double) rdd.count();
-//		double rddSum = rdd.reduce((a,b) -> a.priceData.open + b.priceData.open);
-//		double avgOpeningPrice = rddSum/rddCount;
-//
-//		JavaDStream<StockInformation> rdd2 = stockInformation.window(new Duration(600000), new Duration(300000));
-//		double rdd2Count = (double) rdd.count();
-//		double rdd2sum = rdd.reduce((a,b) -> a.priceData.close + b.priceData.close);
-//		double avgClosingPrice = rdd2sum/rdd2Count;
-//		System.out.println(avgClosingPrice);
-//
-//		// Find the stock out of the four stocks giving maximum profit (average closing price - average opening price)
-//		System.out.println(avgClosingPrice - avgOpeningPrice);
-//
-//		// Pick stock from 4 stocks
-//		JavaDStream<StockInformation> rdd = stockInformation.window()
-
 
 		// Calculate the simple moving average closing price of the four stocks in a 5-minute sliding window for the last 10 minutes
 		simpleMovingAvg(dstream);
@@ -251,6 +237,7 @@ public class Driver {
 		// Calculate the trading volume(total traded volume) of the four stocks every 10 minutes and decide which stock to purchase out of the four stocks.
 		buyMaxStock(dstream);
 
+		// Closing the connection.
 		jssc.start();
 		jssc.awaitTermination();
 	}

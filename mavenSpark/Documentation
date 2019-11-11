@@ -1,0 +1,33 @@
+Problem Statement:
+------------------
+
+1. Calculate the simple moving average closing price of the four stocks in a 5-minute sliding window for the last 10 minutes.  Closing prices are used mostly by the traders and investors as it reflects the price at which the market finally settles down. The SMA (Simple Moving Average) is a parameter used to find the average stock price over a certain period based on a set of parameters. The simple moving average is calculated by adding a stock's prices over a certain period and dividing the sum by the total number of periods. The simple moving average can be used to identify buying and selling opportunities
+2. Find the stock out of the four stocks giving maximum profit (average closing price - average opening price) in a 5-minute sliding window for the last 10 minutes.
+3. Calculate the trading volume(total traded volume) of the four stocks every 10 minutes and decide which stock to purchase out of the four stocks. Remember to take the absolute value of the volume. Volume plays a very important role in technical analysis as it helps us to confirm trends and patterns. You can think of volumes as a means to gain insights into how other participants perceive the market. Volumes are an indicator of how many stocks are bought and sold over a given period of time. Higher the volume, more likely the stock will be bought.
+
+Approach for above problem statements respectively:
+---------------------------------------------------
+
+Calculate the simple moving average closing price of the four stocks in a 5-minute sliding window for the last 10 minutes:
+    1. Created Average tuple class which contains count and average variables.
+    2. Foreach item in that window will extract the symbol, count and the close (price which used to calculate the average).
+    3. Iterate each AverageTuple object, average will be keep getting added.
+    4. Finally the average will be displayed.
+
+Find the stock out of the four stocks giving maximum profit (average closing price - average opening price) in a 5-minute sliding window for the last 10 minutes.
+    1. Created MaximumTuple class which contains count, opening, and closing price.
+    2. Foreach item in that window will extract the symbol, count, open and the close prices.
+    3. Logic of calculating the average is same as above. Here calculated for opening and closing price at the same time.
+    4. Finally the average will be displayed.
+
+Calculate the trading volume(total traded volume) of the four stocks every 10 minutes and decide which stock to purchase out of the four stocks
+    1. Created StockTuple which has count anf volume variables.
+    2. Foreach item in that window will extract the symbol, count, and volume.
+    3. Iterate each and just store which is higher volume.
+
+
+Creation of jar:
+---------------
+mvn compile assembly:single
+
+java -jar <jar-name> <kafka-broker-id> <kafka-topic-name> <kafka-group-id>
