@@ -21,7 +21,7 @@ Find the stock out of the four stocks giving maximum profit (average closing pri
     4. Finally the average will be displayed.
 
 Calculate the trading volume(total traded volume) of the four stocks every 10 minutes and decide which stock to purchase out of the four stocks
-    1. Created StockTuple which has count anf volume variables.
+    1. Created StockTuple which has count and volume variables.
     2. Foreach item in that window will extract the symbol, count, and volume.
     3. Iterate each and just store which is higher volume.
 
