@@ -1,6 +1,9 @@
 package org.example;
 
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.flink.connector.file.src.reader.TextLineInputFormat;
+import org.apache.flink.formats.parquet.avro.AvroParquetReaders;
 import org.apache.hadoop.conf.Configuration;
 
 import org.apache.flink.core.fs.Path;
@@ -19,8 +22,24 @@ import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.runtime.typeutils.InternalTypeInfo;
 
+import java.io.IOException;
+
 public class FileReader
 {
+    public static void readUsingAvroParquet(StreamExecutionEnvironment env) throws IOException {
+        Schema schema = new Schema.Parser().parse(FileReader.class.getClassLoader().getResourceAsStream("business.avsc"));
+
+        final FileSource<GenericRecord> source =
+                FileSource.forRecordStreamFormat(
+                                AvroParquetReaders.forGenericRecord(schema), new Path("file:///tmp/business/"))
+                        .build();
+
+        final DataStream<GenericRecord> stream =
+                env.fromSource(source, WatermarkStrategy.noWatermarks(), "parquet-source");
+        
+        stream.print();
+    }
+
     public static void readParquet(StreamExecutionEnvironment env) {
         final LogicalType[] fieldTypes =
                 new LogicalType[] {
@@ -41,7 +60,7 @@ public class FileReader
         final FileSource<RowData> source =
                 FileSource.forBulkFileFormat(
                         format,
-                        new Path("file:///tmp/business/926641c2-0d4e-4692-a89c-65854e4567e1.parquet")
+                        new Path("file:///tmp/business/")
                 ).build();
 
         final DataStream<RowData> stream =
@@ -67,7 +86,8 @@ public class FileReader
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         // Decide which format to read
-        readParquet(env);
+        //readParquet(env);
+        readUsingAvroParquet(env);
         //readText(env);
 
         env.execute("File Read Example");
